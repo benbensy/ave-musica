@@ -1,7 +1,16 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
-})
+  plugins: [react()],
+  server: {
+    port: 5173,
+    proxy: {
+      "/socket.io/": {
+        changeOrigin: true,
+        target: "ws://localhost:3000",
+      },
+    },
+  },
+});
