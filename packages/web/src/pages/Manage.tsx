@@ -1,22 +1,40 @@
-import { Button, Paper, Input, Alert } from "@mui/material";
+import { Button, Paper, Input } from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useMemo } from "react";
 import { useFileSlice } from "../hooks/fileSlice";
 
 export function Manage() {
   const [slices, hashSlices] = useFileSlice();
-  const [alertMessages, setAlertMessages] = useState<
-    { name: string; md5: string }[]
-  >([]);
 
   const canUpload = useMemo(() => !!slices.length, [slices]);
 
   function selectFile(ev: ChangeEvent<HTMLInputElement>) {
-    hashSlices((ev.target as HTMLInputElement).files?.[0] ?? null);
+    const file = (ev.target as HTMLInputElement).files?.[0];
+    if (file) {
+      if (file.size < 1024 * 1024 * 100) {
+        hashSlices(file);
+      }
+    } else {
+      hashSlices(null);
+    }
   }
 
   async function upload() {
-    setAlertMessages(slices.map(({ md5, name }) => ({ md5, name })));
+    Promise.all(
+      slices.map(async (slice) => {
+        const formData = new FormData();
+        formData.append("file", new File([slice.data], slice.name));
+        formData.append("md5", slice.md5);
+
+        await fetch("http://localhost:3000/music/upload", {
+          method: "POST",
+          body: formData,
+          headers: {
+            Range: `bytes=${slice.start}-${slice.end}`,
+          },
+        });
+      }),
+    );
   }
 
   return (
@@ -33,11 +51,6 @@ export function Manage() {
       <Button disabled={!canUpload} onClick={upload}>
         上传
       </Button>
-      {alertMessages.map((message) => (
-        <Alert variant="outlined" severity="success" key={message.md5}>
-          模拟上传：{message.name} 分片 md5: {message.md5}
-        </Alert>
-      ))}
     </Paper>
   );
 }

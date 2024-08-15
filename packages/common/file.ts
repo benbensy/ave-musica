@@ -1,18 +1,28 @@
 export function sliceFile(file: File, baseSize: number) {
   const chunkSize = baseSize * 1024 * 1024;
-  const chunks: Blob[] = [];
+  const chunkInfos: { chunk: Blob; start: number; end: number }[] = [];
   let startPos = 0;
   while (startPos < file.size) {
-    chunks.push(file.slice(startPos, startPos + chunkSize));
+    const chunk = file.slice(startPos, startPos + chunkSize);
+    chunkInfos.push({
+      chunk,
+      start: startPos,
+      end: startPos + chunk.size,
+    });
     startPos += chunkSize;
   }
-  return chunks;
+  return chunkInfos;
 }
 
-export function getChunkArrayBuffers(chunks: Blob[]) {
-  return Promise.all(chunks.map((chunk) => chunk.arrayBuffer()));
+export function getChunkArrayBufferInfos(
+  chunkInfos: { chunk: Blob; start: number; end: number }[],
+) {
+  return Promise.all(
+    chunkInfos.map(async (info) => ({
+      ...info,
+      chunk: await info.chunk.arrayBuffer(),
+    })),
+  );
 }
 
-export function uploadFileSlices() {
-
-}
+export function uploadFileSlices() {}
