@@ -1,5 +1,10 @@
 import { ListItemIcon, ListItemText, MenuItem, MenuList } from "@mui/material";
-import { Home, Settings, SvgIconComponent } from "@mui/icons-material";
+import {
+  SvgIconComponent,
+  Home,
+  Settings,
+  ManageSearch,
+} from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
 
 interface MenuItemProps {
@@ -15,6 +20,12 @@ const menuItems: MenuItemProps[] = [
     to: "/",
     key: "overview",
     icon: Home,
+  },
+  {
+    label: "管理",
+    to: "/manage",
+    key: "manage",
+    icon: ManageSearch,
   },
   {
     label: "设置",
