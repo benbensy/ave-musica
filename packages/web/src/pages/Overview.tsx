@@ -1,7 +1,7 @@
 import { Paper, Stack } from "@mui/material";
 import { NavLink } from "react-router-dom";
 
-export function Overview() {
+export default function Overview() {
     return <Paper>
         <Stack>
             Overview

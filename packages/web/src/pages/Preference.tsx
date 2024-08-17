@@ -1,3 +1,3 @@
-export function Preference() {
+export default function Preference() {
     return <></>
 }

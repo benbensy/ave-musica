@@ -3,7 +3,7 @@ import { CloudUpload } from "@mui/icons-material";
 import { ChangeEvent, useMemo } from "react";
 import { useFileSlice } from "../hooks/fileSlice";
 
-export function Manage() {
+export default function Manage() {
   const [slices, hashSlices] = useFileSlice();
 
   const canUpload = useMemo(() => !!slices.length, [slices]);

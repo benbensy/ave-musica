@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useSocket } from "../hooks/socket";
 import { Button, Input, Paper, Typography } from "@mui/material";
 
-export function Room() {
+export default function Room() {
   const params = useParams();
   const socket = useSocket();
   const [messageReceive, setMessageReceive] = useState('')
